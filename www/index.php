@@ -5,7 +5,7 @@ Testar tempsiten för PlantHouse
 $Anders=1;
 echo "Testar om PHP funkar"
 echo $Anders
-
+</PHP>
 
 
 
