@@ -1,7 +1,9 @@
-#include "Monitor.h"
-#include "timerHandler.h"
+#include "../renoveringsobjekt/Monitor.h"
+
 #include "defines.h"
 #include <iostream>
+
+#include "../renoveringsobjekt/timerHandler.h"
 Monitor::Monitor()
 {
 }

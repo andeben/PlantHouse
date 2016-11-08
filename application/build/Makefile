@@ -8,30 +8,46 @@
 APPSWU_ROOT = /home/kirk/repo/Planthouse/application/applBlock/appSwu/src
 
 # define the C compiler to use
-CC = g++
+#CC =arm-linux-gnueabihf-g++
+#C = arm-linux-gnueabihf-gcc
+#CC=g++
+#C=gcc
+#/PATH_TO_THE_RPI_TOOLS/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-gcc
+CC=/home/kirk/repo/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-g++
+C=/home/kirk/repo/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-gcc
 
+#CC=/home/kirk/repo/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin/arm-linux-gnueabihf-g++
+#C=/home/kirk/repo/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc
 # define any compile-time flags
-CFLAGS = -std=c++11 -pthread 
-
+CPPFLAGS = -c -std=c++11 -pthread 
+#-Ofast -mfpu=vfp -mfloat-abi=hard -march=armv6zk -mtune=arm1176jzf-s
+CFLAGS = -Wall -c 
 # define any directories containing header files other than /usr/include
 #
 INCLUDES  := -I/home/kirk/repo/Planthouse/application/applBlock/appSwu/export/ \
 	-I/home/kirk/repo/Planthouse/application/applBlock/appSwu/inc \
-	-I/usr/include/mysql
+	-I/usr/include/mysql \
+	-I/usr/local/include
+
+
 
 # define library paths in addition to /usr/lib
 #   if I wanted to include libraries not in /usr/lib I'd specify
 #   their path using -Lpath, something like:
-LFLAGS = -L/usr/lib/x86_64-linux_gnu
+CPPLFLAGS := -L/usr/local/lib \
+	     -L/usr/lib 
+		
 #LFLAGS =
 # define any libraries to link into executable:
 #   if I want to link in libraries (libx.so or libx.a) I use the -llibname 
 #   option, something like (this will link in libmylib.so and libm.so:
-LIBS = -lpthread -lmysqlclient
+LIBS = -lpthread -lwiringPi -lmysqlclient -lz
 
-# define the C source files
-SRCS = Planthouse.cpp
+#-Ofast -mfpu=vfp -mfloat-abi=hard -march=armv6zk -mtune=arm1176jzf-s
 
+# define the CPP source files
+SRCS = Planthouse.cpp DbHandler.cpp TempMoistSensor.cpp PumpRelay.cpp
+CSRCS = 
 # define the C object files 
 #
 # This uses Suffix Replacement within a macro:
@@ -40,8 +56,7 @@ SRCS = Planthouse.cpp
 # Below we are replacing the suffix .c of all words in the macro SRCS
 # with the .o suffix
 #
-OBJS = $(SRCS:.cpp=.o)
-#OBJS=$(subst .cpp,.o,$(SRCS))
+OBJS := $(CSRCS:%.c=%.o) $(SRCS:%.cpp=%.o)
 
 # define the executable file 
 MAIN = Planthouse.exe
@@ -56,16 +71,20 @@ MAIN = Planthouse.exe
 
 all:    $(MAIN) 
 
-$(MAIN): $(OBJS) 
+$(MAIN):$(OBJS) 
 	@echo "$(OBJS)"
-	$(CC) -o $@ $^ $(LFLAGS) $(LIBS)	
-
+	$(CC) -o $@ $^ $(CPPLFLAGS)  $(LIBS) 
 # this is a suffix replacement rule for building .o's from .c's
 # it uses automatic variables $<: the name of the prerequisite of
 # the rule(a .c file) and $@: the name of the target of the rule (a .o file) 
 # (see the gnu make manual section about automatic variables)
+
+
+%.o: $(APPSWU_ROOT)/%.c
+	$(C) $(CFLAGS)  $<  -o $@ 
+
 %.o: $(APPSWU_ROOT)/%.cpp
-	$(CC) -c $(CFLAGS) $(INCLUDES)  $<  -o $@ 
+	$(CC) $(CPPFLAGS) $(INCLUDES)  $<  -o  $@ 
 clean: 
 	rm *.o 
 

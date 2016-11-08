@@ -1,6 +1,6 @@
 #include <list>
-#include "timer.h"
 #include "defines.h"
+#include "../renoveringsobjekt/timer.h"
 
 using namespace std;
 

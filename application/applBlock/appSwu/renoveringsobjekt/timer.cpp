@@ -1,4 +1,5 @@
-#include "timer.h"
+#include "../renoveringsobjekt/timer.h"
+
 #include <unistd.h>
 #include <time.h>
 
