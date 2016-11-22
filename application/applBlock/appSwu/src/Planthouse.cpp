@@ -22,10 +22,10 @@ printf( "Kastellgatan XV Klimatstation\n" );
     if (m_tempMoistSensor->getMeasurementsFromSensor(sensMeasurement))
     {
       printf( "Humidity = %f %% Temperature = %f *C \n", sensMeasurement.MoistMeasurement, sensMeasurement.TempMeasurement);
-      m_pDbHandler->writeMeasurementToDb(sensMeasurement.TempMeasurement, sensMeasurement.MoistMeasurement);
+//      m_pDbHandler->writeMeasurementToDb(sensMeasurement.TempMeasurement, sensMeasurement.MoistMeasurement);
       //delay(1800000);
-      m_pumpRelay->switchRelay();
-      delay(10000);
+      m_pumpRelay->HeartBeat();
+      delay(3000);
     }
 
    delay( 1000 ); /* wait 1sec to refresh */
